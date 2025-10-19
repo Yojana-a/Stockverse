@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StockContext } from '../context/StockContext';
-import ApiTest from '../components/ApiTest';
+import AlphaVantageTest from '../components/AlphaVantageTest';
 
 const Settings = () => {
   const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
@@ -186,8 +186,8 @@ const Settings = () => {
         </div>
       </div>
 
-      {/* API Test */}
-      <ApiTest />
+      {/* Alpha Vantage API Test */}
+      <AlphaVantageTest />
 
       {/* App Information */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200">

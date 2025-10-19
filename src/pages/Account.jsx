@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { StockContext } from '../context/StockContext';
 import PortfolioAnalytics from '../components/PortfolioAnalytics';
-import BankTransactions from '../components/BankTransactions';
 
 const Account = () => {
   const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
@@ -165,9 +164,6 @@ const Account = () => {
 
       {/* Portfolio Analytics */}
       <PortfolioAnalytics />
-
-      {/* Bank Transactions */}
-      <BankTransactions />
 
       {/* Transaction History */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200">
