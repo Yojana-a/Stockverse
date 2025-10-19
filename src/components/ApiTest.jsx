@@ -5,6 +5,11 @@ const ApiTest = () => {
   const [testResult, setTestResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStock, setSelectedStock] = useState('AAPL');
+  
+  // Debug API key
+  const apiKey = import.meta.env.VITE_ALPHA_VANTAGE_API_KEY;
+  console.log('API Key loaded:', apiKey ? 'Yes' : 'No');
+  console.log('API Key value:', apiKey);
 
   const testSingleStock = async () => {
     setIsLoading(true);
@@ -40,6 +45,15 @@ const ApiTest = () => {
   return (
     <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border border-[#D4AF37]/30">
       <h3 className="text-xl font-bold text-[#F7E7CE] mb-4">Alpha Vantage API Test</h3>
+      
+      <div className="mb-4 p-3 bg-black bg-opacity-20 rounded-lg">
+        <p className="text-[#F7E7CE] text-sm">
+          <strong>API Key Status:</strong> {apiKey ? 
+            <span className="text-green-400">✅ Loaded ({apiKey.substring(0, 8)}...)</span> : 
+            <span className="text-red-400">❌ Not found</span>
+          }
+        </p>
+      </div>
       
       <div className="space-y-4">
         <div>

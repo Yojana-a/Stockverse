@@ -47,6 +47,7 @@ const makeApiCall = async (params) => {
 
 // Get real-time stock quote
 export const fetchStockQuote = async (symbol) => {
+
   const params = {
     function: 'GLOBAL_QUOTE',
     symbol: symbol,
@@ -55,6 +56,7 @@ export const fetchStockQuote = async (symbol) => {
   
   try {
     const data = await makeApiCall(params);
+    console.log('Raw Alpha Vantage response for', symbol, ':', data);
     const quote = data['Global Quote'];
     
     if (!quote || !quote['01. symbol']) {

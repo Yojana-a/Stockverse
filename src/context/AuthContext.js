@@ -18,7 +18,8 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in on app start
     const savedUser = localStorage.getItem('stockverse_user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
     }
     setIsLoading(false);
   }, []);
@@ -72,6 +73,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('stockverse_user');
   };
 
+  const clearDemoUsers = () => {
+    // Remove demo users from the users array
+    const users = JSON.parse(localStorage.getItem('stockverse_users') || '[]');
+    const filteredUsers = users.filter(u => u.email !== 'demo@stockverse.com');
+    localStorage.setItem('stockverse_users', JSON.stringify(filteredUsers));
+    
+    // If current user is demo user, log them out
+    if (user && user.email === 'demo@stockverse.com') {
+      setUser(null);
+      localStorage.removeItem('stockverse_user');
+    }
+  };
+
   const updateUser = (updatedUser) => {
     const newUser = { ...user, ...updatedUser };
     setUser(newUser);
@@ -89,6 +103,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     updateUser,
+    clearDemoUsers,
     isLoading
   };
 

@@ -7,32 +7,22 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login, signup } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Create demo user on first load
-  useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('stockverse_users') || '[]');
-    const demoUser = users.find(u => u.email === 'demo@stockverse.com');
-    
-    if (!demoUser) {
-      signup('Demo User', 'demo@stockverse.com', 'demo123');
-    }
-  }, [signup]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    try {
-      await login(email, password);
+    const result = login(email, password);
+    if (result.success) {
       navigate('/dashboard');
-    } catch (err) {
-      setError(err.message || 'Failed to login');
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError(result.error || 'Failed to login');
     }
+    setIsLoading(false);
   };
 
   return (
@@ -82,9 +72,6 @@ const LoginPage = () => {
           <Link to="/signup" className="text-[#D4AF37] hover:underline">
             Sign Up
           </Link>
-        </p>
-        <p className="text-center text-xs text-[#F7E7CE]/60 mt-4">
-          Demo User: demo@stockverse.com / demo123
         </p>
       </div>
     </div>
