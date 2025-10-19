@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { stocks as initialStocks } from '../mockStocks';
+import { fetchMultipleStockQuotes } from '../services/alphaVantageApi';
+import { DEFAULT_STOCKS, COMPANY_NAMES } from '../config/apiConfig';
 
 // Create the context
 export const StockContext = createContext();
@@ -11,8 +13,45 @@ export const StockProvider = ({ children }) => {
   const [userBalance, setUserBalance] = useState(10000);
   const [portfolio, setPortfolio] = useState([]);
   const [transactionHistory, setTransactionHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  // Function to simulate live stock price changes
+  // Function to fetch real stock prices from Alpha Vantage API
+  const fetchRealStockPrices = async () => {
+    if (isLoading) return; // Prevent multiple simultaneous calls
+    
+    setIsLoading(true);
+    setApiError(null);
+    
+    try {
+      const realStocks = await fetchMultipleStockQuotes(DEFAULT_STOCKS);
+      
+      // Map API data to our stock format
+      const updatedStocks = realStocks.map(apiStock => ({
+        symbol: apiStock.symbol,
+        name: COMPANY_NAMES[apiStock.symbol] || apiStock.name,
+        price: apiStock.price,
+        change: apiStock.change,
+        changePercent: apiStock.changePercent,
+        volume: apiStock.volume,
+        high: apiStock.high,
+        low: apiStock.low,
+        open: apiStock.open,
+        previousClose: apiStock.previousClose
+      }));
+      
+      setStocks(updatedStocks);
+    } catch (error) {
+      console.error('Failed to fetch real stock prices:', error);
+      setApiError(error.message);
+      // Fall back to mock data simulation
+      updateStockPrices();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to simulate live stock price changes (fallback)
   const updateStockPrices = () => {
     setStocks(prevStocks => 
       prevStocks.map(stock => {
@@ -27,9 +66,13 @@ export const StockProvider = ({ children }) => {
     );
   };
 
-  // useEffect to simulate live price updates every 10 seconds
+  // useEffect to fetch real stock prices on component mount
   useEffect(() => {
-    const interval = setInterval(updateStockPrices, 10000); // 10 seconds
+    // Fetch real prices immediately
+    fetchRealStockPrices();
+    
+    // Set up interval for periodic updates (every 2 minutes to respect API limits)
+    const interval = setInterval(fetchRealStockPrices, 120000); // 2 minutes
     
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -122,10 +165,20 @@ export const StockProvider = ({ children }) => {
   const contextValue = {
     stocks,
     userBalance,
+    setUserBalance,
     portfolio,
+    addToPortfolio: (stock) => {
+      setPortfolio(prev => [...prev, stock]);
+    },
+    removeFromPortfolio: (symbol) => {
+      setPortfolio(prev => prev.filter(p => p.symbol !== symbol));
+    },
     transactionHistory,
     buyStock,
-    sellStock
+    sellStock,
+    isLoading,
+    apiError,
+    fetchRealStockPrices
   };
 
   return (

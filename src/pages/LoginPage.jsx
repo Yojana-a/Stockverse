@@ -25,92 +25,67 @@ const LoginPage = () => {
     setIsLoading(true);
     setError('');
 
-    const result = login(email, password);
-    
-    if (result.success) {
+    try {
+      await login(email, password);
       navigate('/dashboard');
-    } else {
-      setError(result.error);
+    } catch (err) {
+      setError(err.message || 'Failed to login');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to StockVerse
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link
-              to="/signup"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              create a new account
-            </Link>
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
-          )}
-
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f0f23] to-[#1a1a2e] text-[#F7E7CE]">
+      <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl shadow-2xl p-8 max-w-md w-full border border-[#D4AF37]/30">
+        <h2 className="text-3xl font-bold text-center text-[#F7E7CE] mb-6">Login to StockVerse</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
+            <label htmlFor="email" className="block text-sm font-medium text-[#F7E7CE] mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 bg-white bg-opacity-5 border border-[#D4AF37]/30 rounded-lg text-[#F7E7CE] placeholder-[#F7E7CE]/70 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              placeholder="Enter your email"
+              required
+            />
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Demo credentials: <br />
-              Email: demo@stockverse.com <br />
-              Password: demo123
-            </p>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-[#F7E7CE] mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 bg-white bg-opacity-5 border border-[#D4AF37]/30 rounded-lg text-[#F7E7CE] placeholder-[#F7E7CE]/70 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              placeholder="Enter your password"
+              required
+            />
           </div>
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-[#D4AF37] text-[#2B0A28] py-2 px-4 rounded-lg font-semibold hover:bg-[#F7E7CE] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
+        <p className="text-center text-sm text-[#F7E7CE]/80 mt-6">
+          Don't have an account?{' '}
+          <Link to="/signup" className="text-[#D4AF37] hover:underline">
+            Sign Up
+          </Link>
+        </p>
+        <p className="text-center text-xs text-[#F7E7CE]/60 mt-4">
+          Demo User: demo@stockverse.com / demo123
+        </p>
       </div>
     </div>
   );
