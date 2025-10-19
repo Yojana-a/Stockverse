@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useData } from '../context/DataContext';
+import { useData } from 'react';
+import {StockContext} from '../context/StockContext';
 
 const Settings = () => {
-  const { user, setUser } = useData();
+  const { user, setUser } = useContext(StockContext);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [newUsername, setNewUsername] = useState(user.username);

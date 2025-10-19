@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useData } from '../context/DataContext';
+import React, { useState, useContext } from 'react';
+import { StockContext } from '../context/StockContext';
 
 const BuySell = () => {
-  const { stocks, user, buyStock, sellStock } = useData();
+  const { stocks, userBalance, portfolio, buyStock, sellStock } = useContext(StockContext);
   const [selectedStock, setSelectedStock] = useState('');
   const [quantity, setQuantity] = useState('');
   const [action, setAction] = useState('buy');
@@ -31,22 +31,17 @@ const BuySell = () => {
     const price = stock.price;
 
     try {
-      let result;
       if (action === 'buy') {
-        result = buyStock(selectedStock, shares, price);
+        buyStock(selectedStock, shares);
+        setMessage(`✅ Successfully bought ${shares} shares of ${selectedStock}`);
       } else {
-        result = sellStock(selectedStock, shares, price);
+        sellStock(selectedStock, shares);
+        setMessage(`✅ Successfully sold ${shares} shares of ${selectedStock}`);
       }
-
-      if (result.success) {
-        setMessage(`✅ ${result.message}`);
-        setQuantity('');
-        setSelectedStock('');
-      } else {
-        setMessage(`❌ ${result.message}`);
-      }
+      setQuantity('');
+      setSelectedStock('');
     } catch (error) {
-      setMessage('❌ An error occurred. Please try again.');
+      setMessage(`❌ ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +62,7 @@ const BuySell = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-700">Available Balance</h3>
-            <p className="text-3xl font-bold text-green-600">{formatCurrency(user.virtualBalance)}</p>
+            <p className="text-3xl font-bold text-green-600">{formatCurrency(userBalance)}</p>
           </div>
           <div className="text-4xl">💰</div>
         </div>
@@ -158,10 +153,8 @@ const BuySell = () => {
                   <span className="ml-2 font-semibold">{formatCurrency(selectedStockData.price)}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Change:</span>
-                  <span className={`ml-2 font-semibold ${selectedStockData.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {selectedStockData.change >= 0 ? '+' : ''}{formatCurrency(selectedStockData.change)} ({selectedStockData.changePercent >= 0 ? '+' : ''}{selectedStockData.changePercent.toFixed(2)}%)
-                  </span>
+                  <span className="text-gray-600">Symbol:</span>
+                  <span className="ml-2 font-semibold">{selectedStockData.symbol}</span>
                 </div>
                 <div>
                   <span className="text-gray-600">Total Cost:</span>
@@ -172,7 +165,7 @@ const BuySell = () => {
                 <div>
                   <span className="text-gray-600">Remaining Balance:</span>
                   <span className="ml-2 font-semibold">
-                    {quantity ? formatCurrency(user.virtualBalance - (selectedStockData.price * parseInt(quantity))) : formatCurrency(user.virtualBalance)}
+                    {quantity ? formatCurrency(userBalance - (selectedStockData.price * parseInt(quantity))) : formatCurrency(userBalance)}
                   </span>
                 </div>
               </div>

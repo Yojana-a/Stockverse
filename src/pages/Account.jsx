@@ -1,8 +1,8 @@
-import React from 'react';
-import { useData } from '../context/DataContext';
+import React, { useContext } from 'react';
+import { StockContext } from '../context/StockContext';
 
 const Account = () => {
-  const { user, portfolio, transactionHistory } = useData();
+  const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {

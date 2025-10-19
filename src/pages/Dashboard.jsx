@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
-import { useData } from '../context/DataContext';
+import React, { useContext } from 'react';
+import { StockContext } from '../context/StockContext';
 
 const Dashboard = () => {
-  const { user, stocks, portfolio, updatePortfolioValue } = useData();
+  const { stocks, userBalance, portfolio } = useContext(StockContext);
 
-  useEffect(() => {
-    updatePortfolioValue();
-  }, [updatePortfolioValue]);
+  // Calculate portfolio value
+  const portfolioValue = portfolio.reduce((total, stock) => {
+    const currentStock = stocks.find(s => s.symbol === stock.symbol);
+    return total + (currentStock ? currentStock.price * stock.quantity : 0);
+  }, 0);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -15,16 +17,12 @@ const Dashboard = () => {
     }).format(amount);
   };
 
-  const formatPercent = (percent) => {
-    return `${percent >= 0 ? '+' : ''}${percent.toFixed(2)}%`;
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome back, {user.username}!</p>
+        <p className="text-gray-600">Welcome to StockVerse!</p>
       </div>
 
       {/* Balance Cards */}
@@ -33,7 +31,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-700">Virtual Balance</h3>
-              <p className="text-3xl font-bold text-green-600">{formatCurrency(user.virtualBalance)}</p>
+              <p className="text-3xl font-bold text-green-600">{formatCurrency(userBalance)}</p>
             </div>
             <div className="text-4xl">💰</div>
           </div>
@@ -43,7 +41,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-700">Portfolio Value</h3>
-              <p className="text-3xl font-bold text-blue-600">{formatCurrency(user.totalPortfolioValue)}</p>
+              <p className="text-3xl font-bold text-blue-600">{formatCurrency(portfolioValue)}</p>
             </div>
             <div className="text-4xl">📊</div>
           </div>
@@ -61,10 +59,8 @@ const Dashboard = () => {
             <div className="space-y-4">
               {portfolio.map((stock) => {
                 const currentStock = stocks.find(s => s.symbol === stock.symbol);
-                const currentPrice = currentStock?.price || stock.currentPrice;
-                const totalValue = stock.shares * currentPrice;
-                const gainLoss = totalValue - (stock.shares * stock.avgPrice);
-                const gainLossPercent = ((currentPrice - stock.avgPrice) / stock.avgPrice) * 100;
+                const currentPrice = currentStock?.price || 0;
+                const totalValue = stock.quantity * currentPrice;
 
                 return (
                   <div key={stock.symbol} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -73,14 +69,14 @@ const Dashboard = () => {
                         <span className="text-xl font-bold text-blue-600">{stock.symbol}</span>
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{stock.symbol}</h3>
-                        <p className="text-sm text-gray-600">{stock.shares} shares</p>
+                        <h3 className="font-semibold text-gray-900">{stock.name}</h3>
+                        <p className="text-sm text-gray-600">{stock.quantity} shares</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">{formatCurrency(totalValue)}</p>
-                      <p className={`text-sm ${gainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {formatCurrency(gainLoss)} ({formatPercent(gainLossPercent)})
+                      <p className="text-sm text-gray-600">
+                        {formatCurrency(currentPrice)} per share
                       </p>
                     </div>
                   </div>
@@ -113,9 +109,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-lg font-bold text-gray-900">{formatCurrency(stock.price)}</p>
-                  <p className={`text-sm font-semibold ${stock.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatPercent(stock.changePercent)}
-                  </p>
+                  <p className="text-sm text-gray-600">Live Price</p>
                 </div>
               </div>
             ))}
