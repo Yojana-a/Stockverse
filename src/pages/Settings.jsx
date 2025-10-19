@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StockContext } from '../context/StockContext';
+import ApiTest from '../components/ApiTest';
 
 const Settings = () => {
   const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
@@ -184,6 +185,9 @@ const Settings = () => {
           </div>
         </div>
       </div>
+
+      {/* API Test */}
+      <ApiTest />
 
       {/* App Information */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200">
