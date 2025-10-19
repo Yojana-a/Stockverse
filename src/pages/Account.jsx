@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { StockContext } from '../context/StockContext';
+import { useAuth } from '../context/AuthContext';
 
 const Account = () => {
-  const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
+  const { userBalance, portfolio, transactionHistory, stocks } = useContext(StockContext);
+  const { user } = useAuth();
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -22,11 +24,12 @@ const Account = () => {
   };
 
   const totalInvested = portfolio.reduce((sum, stock) => {
-    return sum + (stock.quantity * 100); // Using a default price for calculation
+    return sum + (stock.quantity * stock.averageCost);
   }, 0);
 
   const totalCurrentValue = portfolio.reduce((sum, stock) => {
-    return sum + (stock.quantity * 100); // Using a default price for calculation
+    const currentStock = stocks.find(s => s.symbol === stock.symbol);
+    return sum + (stock.quantity * (currentStock?.price || 0));
   }, 0);
 
   const totalGainLoss = totalCurrentValue - totalInvested;
@@ -51,9 +54,9 @@ const Account = () => {
               <span className="text-3xl">👤</span>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900">Trader123</h3>
-              <p className="text-gray-600">Virtual Trader</p>
-              <p className="text-sm text-gray-500">Member since January 2024</p>
+              <h3 className="text-2xl font-bold text-gray-900">{user?.name || 'Trader'}</h3>
+              <p className="text-gray-600">{user?.email || 'Virtual Trader'}</p>
+              <p className="text-sm text-gray-500">Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'January 2024'}</p>
             </div>
           </div>
         </div>
@@ -119,9 +122,11 @@ const Account = () => {
                 </thead>
                 <tbody>
                   {portfolio.map((stock) => {
-                    const totalValue = stock.quantity * 100; // Using default price
-                    const gainLoss = 0; // Simplified for now
-                    const gainLossPercent = 0;
+                    const currentStock = stocks.find(s => s.symbol === stock.symbol);
+                    const currentPrice = currentStock?.price || 0;
+                    const totalValue = stock.quantity * currentPrice;
+                    const gainLoss = totalValue - (stock.quantity * stock.averageCost);
+                    const gainLossPercent = stock.averageCost > 0 ? (gainLoss / (stock.quantity * stock.averageCost)) * 100 : 0;
 
                     return (
                       <tr key={stock.symbol} className="border-b border-gray-100 hover:bg-gray-50">
@@ -134,8 +139,8 @@ const Account = () => {
                           </div>
                         </td>
                         <td className="py-3 px-4 text-gray-900">{stock.quantity}</td>
-                        <td className="py-3 px-4 text-gray-900">{formatCurrency(100)}</td>
-                        <td className="py-3 px-4 text-gray-900">{formatCurrency(100)}</td>
+                        <td className="py-3 px-4 text-gray-900">{formatCurrency(stock.averageCost)}</td>
+                        <td className="py-3 px-4 text-gray-900">{formatCurrency(currentPrice)}</td>
                         <td className="py-3 px-4 font-semibold text-gray-900">{formatCurrency(totalValue)}</td>
                         <td className="py-3 px-4">
                           <div className={`font-semibold ${gainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
