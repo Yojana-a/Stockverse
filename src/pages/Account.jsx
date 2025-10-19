@@ -1,9 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StockContext } from '../context/StockContext';
 import PortfolioAnalytics from '../components/PortfolioAnalytics';
 
 const Account = () => {
-  const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
+  const { stocks, userBalance, portfolio, transactionHistory } = useContext(StockContext);
+  const [user, setUser] = useState(null);
+
+  // Get user data from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -22,15 +35,18 @@ const Account = () => {
     });
   };
 
+  // Calculate portfolio value using real stock prices
+  const portfolioValue = portfolio.reduce((total, stock) => {
+    const currentStock = stocks.find(s => s.symbol === stock.symbol);
+    return total + (currentStock ? currentStock.price * stock.quantity : 0);
+  }, 0);
+
+  // Calculate total invested (using average cost from portfolio)
   const totalInvested = portfolio.reduce((sum, stock) => {
-    return sum + (stock.quantity * 100); // Using a default price for calculation
+    return sum + (stock.averageCost * stock.quantity);
   }, 0);
 
-  const totalCurrentValue = portfolio.reduce((sum, stock) => {
-    return sum + (stock.quantity * 100); // Using a default price for calculation
-  }, 0);
-
-  const totalGainLoss = totalCurrentValue - totalInvested;
+  const totalGainLoss = portfolioValue - totalInvested;
   const totalGainLossPercent = totalInvested > 0 ? (totalGainLoss / totalInvested) * 100 : 0;
 
   return (
@@ -52,9 +68,9 @@ const Account = () => {
               <span className="text-3xl">👤</span>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900">Trader123</h3>
-              <p className="text-gray-600">Virtual Trader</p>
-              <p className="text-sm text-gray-500">Member since January 2024</p>
+              <h3 className="text-2xl font-bold text-gray-900">{user?.name || 'Loading...'}</h3>
+              <p className="text-gray-600">{user?.email || 'Loading...'}</p>
+              <p className="text-sm text-gray-500">Member since {user ? new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Loading...'}</p>
             </div>
           </div>
         </div>
@@ -66,7 +82,7 @@ const Account = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-700">Total Portfolio Value</h3>
-              <p className="text-3xl font-bold text-blue-600">{formatCurrency(userBalance + totalCurrentValue)}</p>
+              <p className="text-3xl font-bold text-blue-600">{formatCurrency(userBalance + portfolioValue)}</p>
             </div>
             <div className="text-4xl">📊</div>
           </div>
@@ -120,9 +136,11 @@ const Account = () => {
                 </thead>
                 <tbody>
                   {portfolio.map((stock) => {
-                    const totalValue = stock.quantity * 100; // Using default price
-                    const gainLoss = 0; // Simplified for now
-                    const gainLossPercent = 0;
+                    const currentStock = stocks.find(s => s.symbol === stock.symbol);
+                    const currentPrice = currentStock?.price || 0;
+                    const totalValue = stock.quantity * currentPrice;
+                    const gainLoss = totalValue - (stock.averageCost * stock.quantity);
+                    const gainLossPercent = stock.averageCost > 0 ? (gainLoss / (stock.averageCost * stock.quantity)) * 100 : 0;
 
                     return (
                       <tr key={stock.symbol} className="border-b border-gray-100 hover:bg-gray-50">
@@ -135,8 +153,8 @@ const Account = () => {
                           </div>
                         </td>
                         <td className="py-3 px-4 text-gray-900">{stock.quantity}</td>
-                        <td className="py-3 px-4 text-gray-900">{formatCurrency(100)}</td>
-                        <td className="py-3 px-4 text-gray-900">{formatCurrency(100)}</td>
+                        <td className="py-3 px-4 text-gray-900">{formatCurrency(stock.averageCost)}</td>
+                        <td className="py-3 px-4 text-gray-900">{formatCurrency(currentPrice)}</td>
                         <td className="py-3 px-4 font-semibold text-gray-900">{formatCurrency(totalValue)}</td>
                         <td className="py-3 px-4">
                           <div className={`font-semibold ${gainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { stocks as initialStocks } from '../mockStocks';
-import { fetchStockQuote, searchStocks } from '../services/alphaVantageApi';
+// import { fetchStockQuote, searchStocks } from '../services/alphaVantageApi';
 
 // Create the context
 export const StockContext = createContext();
@@ -15,116 +15,42 @@ export const StockProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
-  // Function to update stock prices using Alpha Vantage API
-  const updateStockPrices = async () => {
-    setIsLoading(true);
-    setApiError(null);
-    
-    try {
-      const updatedStocks = await Promise.all(
-        stocks.map(async (stock) => {
-          const result = await fetchStockQuote(stock.symbol);
-          if (result.success) {
-            return {
-              ...stock,
-              price: result.data.price,
-              change: result.data.change,
-              changePercent: result.data.changePercent,
-              volume: result.data.volume,
-              high: result.data.high,
-              low: result.data.low,
-              open: result.data.open,
-              previousClose: result.data.previousClose,
-              lastUpdated: result.data.lastUpdated
-            };
-          } else {
-            // If API fails, keep existing data
-            console.warn(`Failed to fetch ${stock.symbol}:`, result.message);
-            return stock;
-          }
-        })
-      );
-      
-      setStocks(updatedStocks);
-    } catch (error) {
-      console.error('Error updating stock prices:', error);
-      setApiError('Failed to update stock prices');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Function to search for new stocks
-  const searchForStocks = async (keywords) => {
-    setIsLoading(true);
-    setApiError(null);
-    
-    try {
-      const result = await searchStocks(keywords);
-      if (result.success) {
-        return result.data;
-      } else {
-        setApiError(result.message);
-        return [];
-      }
-    } catch (error) {
-      console.error('Error searching stocks:', error);
-      setApiError('Failed to search stocks');
-      return [];
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Function to add a new stock to the watchlist
-  const addStockToWatchlist = async (symbol) => {
-    setIsLoading(true);
-    setApiError(null);
-    
-    try {
-      const result = await fetchStockQuote(symbol);
-      if (result.success) {
-        const newStock = {
-          symbol: result.data.symbol,
-          name: symbol, // We'll get the name from company overview later
-          price: result.data.price,
-          change: result.data.change,
-          changePercent: result.data.changePercent,
-          volume: result.data.volume,
-          marketCap: 0, // Will be filled by company overview
-          sector: 'Unknown', // Will be filled by company overview
-          high: result.data.high,
-          low: result.data.low,
-          open: result.data.open,
-          previousClose: result.data.previousClose,
-          lastUpdated: result.data.lastUpdated
+  // Function to simulate live stock price changes (temporarily disabled API)
+  const updateStockPrices = () => {
+    setStocks(prevStocks => 
+      prevStocks.map(stock => {
+        // More realistic price changes: -3% to +3%
+        const changePercent = (Math.random() - 0.5) * 0.06; // -3% to +3%
+        const newPrice = stock.price * (1 + changePercent);
+        const priceChange = newPrice - stock.price;
+        const changePercentValue = (priceChange / stock.price) * 100;
+        
+        return {
+          ...stock,
+          price: Math.round(newPrice * 100) / 100, // Round to 2 decimal places
+          change: Math.round(priceChange * 100) / 100,
+          changePercent: Math.round(changePercentValue * 100) / 100,
+          volume: Math.floor(stock.volume * (0.8 + Math.random() * 0.4)) // Simulate volume changes
         };
-        
-        setStocks(prevStocks => {
-          // Check if stock already exists
-          if (prevStocks.find(s => s.symbol === symbol)) {
-            return prevStocks;
-          }
-          return [...prevStocks, newStock];
-        });
-        
-        return { success: true, message: `Added ${symbol} to watchlist` };
-      } else {
-        setApiError(result.message);
-        return { success: false, message: result.message };
-      }
-    } catch (error) {
-      console.error('Error adding stock:', error);
-      setApiError('Failed to add stock');
-      return { success: false, message: 'Failed to add stock' };
-    } finally {
-      setIsLoading(false);
-    }
+      })
+    );
   };
 
-  // useEffect to update prices every 30 seconds (respecting API rate limits)
+  // Function to search for new stocks (temporarily disabled API)
+  const searchForStocks = async (keywords) => {
+    console.log('Search functionality temporarily disabled - using mock data');
+    return [];
+  };
+
+  // Function to add a new stock to the watchlist (temporarily disabled API)
+  const addStockToWatchlist = async (symbol) => {
+    console.log('Add stock functionality temporarily disabled');
+    return { success: false, message: 'API temporarily disabled' };
+  };
+
+  // useEffect to simulate live price updates every 10 seconds
   useEffect(() => {
-    const interval = setInterval(updateStockPrices, 30000); // 30 seconds
+    const interval = setInterval(updateStockPrices, 10000); // 10 seconds
     
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
