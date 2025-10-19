@@ -5,12 +5,12 @@ import Dashboard from './pages/Dashboard';
 import BuySell from './pages/BuySell';
 import Account from './pages/Account';
 import Settings from './pages/Settings';
-import { DataProvider } from './context/DataContext';
+import { StockProvider } from './context/StockContext';
 import './App.css';
 
 function App() {
   return (
-    <DataProvider>
+    <StockProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
@@ -25,7 +25,7 @@ function App() {
           </main>
         </div>
       </Router>
-    </DataProvider>
+    </StockProvider>
   );
 }
 

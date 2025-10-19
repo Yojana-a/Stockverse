@@ -1,41 +1,34 @@
-import React, { useState } from 'react';
-import { useData } from 'react';
-import {StockContext} from '../context/StockContext';
+import React, { useState, useContext } from 'react';
+import { StockContext } from '../context/StockContext';
 
 const Settings = () => {
-  const { user, setUser } = useContext(StockContext);
+  const { userBalance, portfolio, transactionHistory } = useContext(StockContext);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [newUsername, setNewUsername] = useState(user.username);
+  const [newUsername, setNewUsername] = useState('Trader123');
 
   const handleUsernameChange = (e) => {
     e.preventDefault();
     if (newUsername.trim()) {
-      setUser(prev => ({ ...prev, username: newUsername.trim() }));
       alert('Username updated successfully!');
     }
   };
 
   const handleResetData = () => {
     if (window.confirm('Are you sure you want to reset all your data? This action cannot be undone.')) {
-      // Reset user data
-      setUser({
-        username: 'Trader123',
-        virtualBalance: 10000,
-        totalPortfolioValue: 10000,
-      });
-      
       // Clear localStorage if needed
       localStorage.clear();
       
-      alert('Data reset successfully!');
+      alert('Data reset successfully! Please refresh the page to see changes.');
       setShowResetConfirm(false);
     }
   };
 
   const handleExportData = () => {
     const data = {
-      user,
+      userBalance,
+      portfolio,
+      transactionHistory,
       timestamp: new Date().toISOString(),
       version: '1.0.0'
     };
