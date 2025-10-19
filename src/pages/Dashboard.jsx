@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { StockContext } from '../context/StockContext';
+import MarketChart from '../components/MarketChart';
 
 const Dashboard = () => {
   const { stocks, userBalance, portfolio } = useContext(StockContext);
@@ -92,6 +93,9 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Market Chart */}
+      <MarketChart stocks={stocks} />
 
       {/* Market Overview */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200">
