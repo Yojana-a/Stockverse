@@ -1,5 +1,5 @@
 // Alpha Vantage API service
-const API_KEY = import.meta.env.VITE_ALPHA_VANTAGE_API_KEY || 'OMDGFKYM8QZJQZJQ'; // Fallback key
+const API_KEY = import.meta.env.VITE_ALPHA_VANTAGE_API_KEY;
 const BASE_URL = 'https://www.alphavantage.co/query';
 
 // Rate limiting: Alpha Vantage free tier allows 5 calls per minute
