@@ -17,7 +17,7 @@ function App() {
     <AuthProvider>
       <StockProvider>
         <Router>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen">
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />

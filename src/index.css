@@ -17,6 +17,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('/front.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: #76092b;
 }
 
@@ -26,4 +31,12 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+/* Box background using front.png */
+.box-bg {
+  background-image: url('/front.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
