@@ -1,146 +1,132 @@
-<<<<<<< HEAD
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
 # 📈 Stockverse - Virtual Stock Trading Platform
 
-A hackathon-ready virtual stock trading platform built with React and React Router.
+A hackathon-ready virtual stock trading platform built with **React**, **Vite**, and **Tailwind CSS**.
 
 ## 🚀 Features
 
-- **Dashboard**: View your virtual balance, portfolio value, and market overview
-- **Buy/Sell**: Trade virtual stocks with real-time price updates
-- **Account**: Track your portfolio holdings and transaction history
-- **Settings**: Customize your experience with theme options and data management
+- **Dashboard** – View your virtual balance, portfolio value, and market overview  
+- **Buy/Sell** – Trade virtual stocks with real-time price updates  
+- **Account** – Track your portfolio holdings and transaction history  
+- **Settings** – Customize your experience with theme options and data management  
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18.2.0
-- **Routing**: React Router DOM 7.9.4
-- **Styling**: Tailwind CSS (via CDN)
-- **State Management**: React Context API
+- **Frontend**: React 18 + Vite  
+- **Routing**: React Router DOM  
+- **Styling**: Tailwind CSS  
+- **State Management**: React Context API  
 
 ## 📦 Installation
 
-1. Install dependencies:
-```bash
-npm install
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/stockverse.git
+   cd stockverse
+2. Install dependencies: 
+    npm install
+3. Start the development server:
+    npm run dev
 
-2. Start the development server:
-```bash
-npm start
-```
-
-3. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-## 🎯 Project Structure
-
-```
+Project Structure
 src/
 ├── components/
 │   └── Navbar.jsx          # Navigation component
 ├── pages/
-│   ├── Dashboard.jsx       # Main dashboard with balance & stocks
+│   ├── Dashboard.jsx       # Main dashboard
 │   ├── BuySell.jsx         # Trading interface
 │   ├── Account.jsx         # User profile & portfolio
-│   └── Settings.jsx        # App settings & preferences
+│   └── Settings.jsx        # Preferences and app settings
 ├── context/
-│   └── DataContext.jsx     # Global state management
-├── App.jsx                 # Main app component with routing
-├── App.css                 # Global styles with Tailwind
-└── index.js                # React entry point
-```
+│   └── StockContext.jsx    # Global state management
+├── App.jsx                 # Main app with routes
+├── index.jsx               # React entry point
+└── App.css                 # Global styles
 
-## 🎨 UI Components
+🎨 UI Highlights
 
-### Navigation
-- Clean navbar with emoji icons
-- Responsive design for mobile/desktop
-- Active state highlighting
+Responsive navbar with icons
 
-### Dashboard
-- Virtual balance display
-- Portfolio overview with gain/loss
-- Market overview with stock prices
-- Card-based layout with Tailwind styling
+Card-based dashboard layout
 
-### Buy/Sell Interface
-- Stock selection dropdown
-- Quantity input with validation
-- Buy/Sell action buttons
-- Real-time price calculations
-- Transaction feedback
+Real-time portfolio tracking
 
-### Account Page
-- User profile information
-- Portfolio holdings table
-- Transaction history
-- Performance metrics
+Buy/Sell stock interactions
 
-### Settings
-- Username editing
-- Theme toggle (placeholder)
-- Data export/import
-- Reset functionality
+Modern Tailwind styling
 
-## 💾 Data Management
+💾 Data Management
 
-The app uses React Context for state management with:
-- User profile data
-- Virtual balance tracking
-- Portfolio holdings
-- Transaction history
-- Stock price data
+Stockverse uses React Context to manage:
 
-## 🎯 Hackathon Ready
+User balance and holdings
 
-This project is designed to be demo-ready with:
-- Clean, modern UI using Tailwind CSS
-- Responsive design
-- Interactive components
-- Real-time calculations
-- Professional styling
-- Complete navigation system
+Stock price updates
 
-## 🚀 Getting Started
+Transaction history
 
-1. Clone the repository
-2. Run `npm install`
-3. Run `npm start`
-4. Navigate to different pages using the navbar
-5. Try buying/selling stocks
-6. Check your account and portfolio
+🧠 Ideal For
 
-## 📱 Responsive Design
+Hackathons and demo projects
 
-The app is fully responsive and works on:
-- Desktop computers
-- Tablets
-- Mobile phones
+Learning React + Context API
 
-## 🎨 Styling
+Building modern, single-page apps
 
-Uses Tailwind CSS for:
-- Consistent spacing and typography
-- Responsive grid layouts
-- Hover effects and transitions
-- Color-coded status indicators
-- Card-based component design
+📱 Responsive Design
 
-Enjoy trading! 📈
->>>>>>> 84967ae8e13ca7c9ebfa85b82569050428a7266f
+Works seamlessly across:
+
+💻 Desktop
+
+📱 Mobile
+
+🧾 Tablets
+
+🪪 License
+    This project is licensed under the MIT License.
+
+
+---
+
+### 🧹 Next Steps (for GitHub)
+
+1. Delete the merge markers:
+   ```bash
+   rm -rf node_modules
+   git add .
+   git commit -m "Cleaned README and project structure"
+   git push
+
+2. (Optional) Add .gitignore file (for Vite + React):
+    node_modules
+dist
+.env
+.DS_Store
+
+3. Add a screenshot to your README:
+![Dashboard Preview](public/preview.png)
+
+LICENSE
+
+MIT License
+
+Copyright (c) 2025 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
